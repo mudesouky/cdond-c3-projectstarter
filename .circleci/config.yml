@@ -137,7 +137,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters "Name=tag:Project,Values=udapeople" \
+            --filters "Name=tag:project,Values=udapeople" \
             --output text >> ./.circleci/ansible/inventory.txt
             cat ./.circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -184,6 +184,8 @@ jobs:
           command: |
              cd backend
              npm install
+             apt-get update
+             apt-get -y install awscli
              # Run and save the migration output
              npm run migrations > migrations_dump.txt
       - run:
@@ -194,6 +196,7 @@ jobs:
                 curl https://kvdb.io/LiHjiS87dZ7p72Ugw6d8ux/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
              fi
      # Here's where you will add some code to rollback on failure
+     #- revert-migrations
       - destroy-environment
 
   deploy-frontend:
@@ -247,8 +250,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
             pip3 install awscli
+            apk add --update ansible gzip tar
+            apk add --update nodejs
       - run:
           name: Deploy backend
           command: |
