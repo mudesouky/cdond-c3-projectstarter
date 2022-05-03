@@ -28,8 +28,6 @@
 - name: "unpack backend articat"
   become: yes
   shell: |
-    ls
-    pwd
     tar -vxfz artifact.tar.gz
 
 - name: start app 
