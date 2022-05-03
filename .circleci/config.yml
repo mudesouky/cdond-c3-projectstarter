@@ -226,8 +226,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -235,6 +233,8 @@ jobs:
             yum -y install tar gzip
             yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
             yum -y install nodejs
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -273,8 +273,8 @@ jobs:
           name: Install dependencies
           command: |
             pip3 install awscli
-            apk add --update ansible gzip tar
-            apk add --update nodejs
+            apk add --update ansible gzip tar curl
+            apk add --update nodejs npm
       - run:
           name: Deploy backend
           command: |
@@ -359,3 +359,5 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
