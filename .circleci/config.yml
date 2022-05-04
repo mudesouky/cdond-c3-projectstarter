@@ -371,6 +371,10 @@ jobs:
 
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CurrentWorkflowID: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - OldWorkflowID
       # Here's where you will add some code to rollback on failure  
       - revert-migrations
       - destroy-environment
@@ -380,6 +384,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Remove old stacks and files
           command: |
