@@ -299,6 +299,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update curl
+            apk add --update aws-cli
       - run:
           name: Get backend url
           command: |
