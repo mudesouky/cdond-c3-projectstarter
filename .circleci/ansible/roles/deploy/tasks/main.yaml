@@ -28,7 +28,7 @@
 - name: "unpack backend articat"
   become: yes
   shell: |
-    tar -xzvf artifact.tar.gz
+    tar -xzvf ~/artifact.tar.gz
 
 - name: start app 
   become: yes
