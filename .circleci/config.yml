@@ -407,7 +407,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - master
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
