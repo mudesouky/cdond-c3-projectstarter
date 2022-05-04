@@ -312,8 +312,11 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            echo "${API_URL}"
-            curl "${API_URL}/api/status"
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople" \
+            --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
@@ -401,6 +404,10 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only:
+                - main
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
